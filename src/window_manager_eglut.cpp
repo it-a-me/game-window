@@ -5,7 +5,9 @@
 #include <eglut.h>
 #include <eglut_x11.h>
 #include <unistd.h>
+#ifndef __FreeBSD__
 #include <linux/limits.h>
+#endif
 #include <libgen.h>
 #include <cstring>
 
