@@ -204,7 +204,7 @@ void SDL3GameWindow::pollEvents() {
             }
             break;
         case SDL_EVENT_MOUSE_WHEEL:
-            onMouseScroll(ev.wheel.mouseX, ev.wheel.mouseY, ev.wheel.x, ev.wheel.y);
+            onMouseScroll(ev.wheel.mouse_x, ev.wheel.mouse_y, ev.wheel.x, ev.wheel.y);
             break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
         case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -214,21 +214,21 @@ void SDL3GameWindow::pollEvents() {
         {
             int w, h;
             getWindowSize(w, h);
-            onTouchStart(ev.tfinger.fingerId, ev.tfinger.x * w, ev.tfinger.y * h);
+            onTouchStart(ev.tfinger.fingerID, ev.tfinger.x * w, ev.tfinger.y * h);
             break;
         }
         case SDL_EVENT_FINGER_UP:
         {
             int w, h;
             getWindowSize(w, h);
-            onTouchEnd(ev.tfinger.fingerId, ev.tfinger.x * w, ev.tfinger.y * h);
+            onTouchEnd(ev.tfinger.fingerID, ev.tfinger.x * w, ev.tfinger.y * h);
             break;
         }
         case SDL_EVENT_FINGER_MOTION:
         {
             int w, h;
             getWindowSize(w, h);
-            onTouchUpdate(ev.tfinger.fingerId, ev.tfinger.x * w, ev.tfinger.y * h);
+            onTouchUpdate(ev.tfinger.fingerID, ev.tfinger.x * w, ev.tfinger.y * h);
             break;
         }
         case SDL_EVENT_KEY_DOWN:
@@ -419,7 +419,7 @@ KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
             return KeyCode::PERIOD;
         case SDLK_SLASH:
             return KeyCode::SLASH;
-        case SDLK_BACKQUOTE:
+        case SDLK_GRAVE:
             return KeyCode::GRAVE;
         case SDLK_LEFTBRACKET:
             return KeyCode::LEFT_BRACKET;
@@ -427,7 +427,7 @@ KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
             return KeyCode::BACKSLASH;
         case SDLK_RIGHTBRACKET:
             return KeyCode::RIGHT_BRACKET;
-        case SDLK_QUOTE:
+        case SDLK_APOSTROPHE:
             return KeyCode::APOSTROPHE;
         case SDLK_LGUI:
             return KeyCode::LEFT_SUPER;
