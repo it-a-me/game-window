@@ -69,6 +69,8 @@ void SDL3GameWindow::setRelativeScale() {
     SDL_GetWindowSize(window, &wx, &wy);
 
     relativeScale = (int) floor(((fx / wx) + (fy / wy)) / 2);
+    relativeScaleX = (double)fx / wx;
+    relativeScaleY = (double)fy / wy;
     // Update window size to match content size mismatch
     width = fx;
     height = fy;
@@ -198,13 +200,13 @@ void SDL3GameWindow::pollEvents() {
         {
         case SDL_EVENT_MOUSE_MOTION:
             if(!SDL_GetRelativeMouseMode()) {
-                onMousePosition(ev.motion.x, ev.motion.y);
+                onMousePosition(ev.motion.x * relativeScaleX, ev.motion.y * relativeScaleY);
             } else {
                 onMouseRelativePosition(ev.motion.xrel, ev.motion.yrel);
             }
             break;
         case SDL_EVENT_MOUSE_WHEEL:
-            onMouseScroll(ev.wheel.mouse_x, ev.wheel.mouse_y, ev.wheel.x, ev.wheel.y);
+            onMouseScroll(ev.wheel.mouse_x * relativeScaleX, ev.wheel.mouse_y * relativeScaleY, ev.wheel.x, ev.wheel.y);
             break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
         case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -262,9 +264,7 @@ void SDL3GameWindow::pollEvents() {
             onGamepadState(ev.gdevice.which, ev.type == SDL_EVENT_GAMEPAD_ADDED);
             break;
         case SDL_EVENT_WINDOW_RESIZED:
-            width = ev.window.data1;
-            height = ev.window.data2;
-            onWindowSizeChanged(ev.window.data1, ev.window.data2);
+            setRelativeScale();
             break;
         case SDL_EVENT_TEXT_INPUT:
             onKeyboardText(ev.text.text ? ev.text.text : "");
@@ -274,10 +274,17 @@ void SDL3GameWindow::pollEvents() {
             break;
         case SDL_EVENT_WINDOW_DISPLAY_CHANGED:
             modes.clear();
+            setRelativeScale();
+            break;
+        case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+            setRelativeScale();
             break;
         default:
             break;
         }
+    }
+    if(resized) {
+        onWindowSizeChanged(width, height);
     }
 }
 

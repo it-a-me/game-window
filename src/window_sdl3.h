@@ -18,7 +18,8 @@ private:
     int width = -1, height = -1;
     // width and height in window coordinates = pixels / relativeScale
     int windowedWidth = -1, windowedHeight = -1;
-    int relativeScale;
+    int relativeScale = 1;
+    double relativeScaleX = 1, relativeScaleY = 1;
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
