@@ -41,8 +41,8 @@ SDL3GameWindow::SDL3GameWindow(const std::string& title, int width, int height, 
     }
     SDL_GL_MakeCurrent(window, context);
 
-    SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
-    SDL_StartTextInput();
+    // SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
+    SDL_StopTextInput(window);
     setRelativeScale();
 }
 
@@ -235,22 +235,24 @@ void SDL3GameWindow::pollEvents() {
         }
         case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_KEY_UP:
-            if(SDL_TextInputActive() && ev.type == SDL_EVENT_KEY_DOWN) {
-                if(ev.key.keysym.sym == SDLK_BACKSPACE) {
+            if(ev.type == SDL_EVENT_KEY_DOWN)
+            if(SDL_TextInputActive(window)) {
+                if(ev.key.key == SDLK_BACKSPACE) {
                     onKeyboardText("\b");
-                } else if(ev.key.keysym.sym == SDLK_DELETE) {
+                } else if(ev.key.key == SDLK_DELETE) {
                     onKeyboardText("\x7F");
-                } else if(ev.key.keysym.sym == SDLK_RETURN) {
+                } else if(ev.key.key == SDLK_RETURN) {
                     onKeyboardText("\n");
                 }
+            } else if(ev.key.key < 0x40000000) {
+                onKeyboardText(std::string(1, (char)ev.key.key));
             }
-            if(SDL_GetModState() & SDL_KMOD_CTRL && ev.key.keysym.sym == SDLK_v) {
+            if(SDL_GetModState() & SDL_KMOD_CTRL && ev.key.key == SDLK_v) {
                 auto str = SDL_GetClipboardText();
                 onPaste(str);
                 SDL_free(str);
             }
-
-            onKeyboard(getKeyMinecraft(ev.key.keysym.sym), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
+            onKeyboard(getKeyMinecraft(SDL_GetDefaultKeyFromScancode(ev.key.scancode, SDL_KMOD_NONE)), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
             break;
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
         case SDL_EVENT_GAMEPAD_BUTTON_UP:
@@ -351,15 +353,16 @@ void SDL3GameWindow::setSwapInterval(int interval) {
 }
 
 void SDL3GameWindow::startTextInput() {
-    SDL_StopTextInput();
-    SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "1");
-    SDL_StartTextInput();
+    // SDL_StopTextInput();
+    // SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "1");
+    // SDL_SetHint(SDL_HINT_IME_INTERNAL_EDITING, "1");
+    SDL_StartTextInput(window);
 }
 
 void SDL3GameWindow::stopTextInput() {
-    SDL_StopTextInput();
-    SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
-    SDL_StartTextInput();
+    SDL_StopTextInput(window);
+    // SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
+    // SDL_StartTextInput();
 }
 
 KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
