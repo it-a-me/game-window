@@ -247,7 +247,7 @@ void SDL3GameWindow::pollEvents() {
             } else if(ev.key.key < 0x40000000) {
                 onKeyboardText(std::string(1, (char)ev.key.key));
             }
-            if(SDL_GetModState() & SDL_KMOD_CTRL && ev.key.key == SDLK_v) {
+            if(SDL_GetModState() & SDL_KMOD_CTRL && ev.key.key == SDLK_V) {
                 auto str = SDL_GetClipboardText();
                 onPaste(str);
                 SDL_free(str);
@@ -370,8 +370,8 @@ KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
         return (KeyCode) (keyCode - SDLK_F1 + (int) KeyCode::FN1);
     if (keyCode >= SDLK_KP_1 && keyCode <= SDLK_KP_9)
         return (KeyCode) (keyCode - SDLK_KP_1 + (int) KeyCode::NUMPAD_1);
-    if (keyCode >= SDLK_a && keyCode <= SDLK_z)
-        return (KeyCode) (keyCode - SDLK_a + (int) KeyCode::A);
+    if (keyCode >= SDLK_A && keyCode <= SDLK_Z)
+        return (KeyCode) (keyCode - SDLK_A + (int) KeyCode::A);
     switch (keyCode) {
         case SDLK_BACKSPACE:
             return KeyCode::BACKSPACE;
