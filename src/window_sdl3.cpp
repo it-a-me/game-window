@@ -235,22 +235,23 @@ void SDL3GameWindow::pollEvents() {
         }
         case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_KEY_UP:
-            if(ev.type == SDL_EVENT_KEY_DOWN)
-            if(SDL_TextInputActive(window)) {
-                if(ev.key.key == SDLK_BACKSPACE) {
-                    onKeyboardText("\b");
-                } else if(ev.key.key == SDLK_DELETE) {
-                    onKeyboardText("\x7F");
-                } else if(ev.key.key == SDLK_RETURN) {
-                    onKeyboardText("\n");
+            if(ev.type == SDL_EVENT_KEY_DOWN) {
+                if(SDL_TextInputActive(window)) {
+                    if(ev.key.key == SDLK_BACKSPACE) {
+                        onKeyboardText("\b");
+                    } else if(ev.key.key == SDLK_DELETE) {
+                        onKeyboardText("\x7F");
+                    } else if(ev.key.key == SDLK_RETURN) {
+                        onKeyboardText("\n");
+                    }
+                } else if(ev.key.key < 0x40000000) {
+                    onKeyboardText(std::string(1, (char)ev.key.key));
                 }
-            } else if(ev.key.key < 0x40000000) {
-                onKeyboardText(std::string(1, (char)ev.key.key));
             }
+
             if(SDL_GetModState() & SDL_KMOD_CTRL && ev.key.key == SDLK_V) {
                 auto str = SDL_GetClipboardText();
                 onPaste(str);
-                SDL_free(str);
             }
             onKeyboard(getKeyMinecraft(SDL_GetDefaultKeyFromScancode(ev.key.scancode, SDL_KMOD_NONE)), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
             break;
@@ -325,7 +326,7 @@ std::vector<FullscreenMode> SDL3GameWindow::getFullscreenModes() {
         auto display = SDL_GetDisplayForWindow(window);
         auto modes = SDL_GetFullscreenDisplayModes(display, &nModes);
         for(int j = 0; j < nModes; j++) {
-            this->modes.emplace_back(FullscreenMode { .description = getModeDescription(modes[j]), .id = j });
+            this->modes.emplace_back(FullscreenMode { .id = j, .description = getModeDescription(modes[j]) });
         }
         SDL_free(modes);
     }
