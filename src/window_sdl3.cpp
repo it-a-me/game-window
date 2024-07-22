@@ -192,7 +192,6 @@ void SDL3GameWindow::pollEvents() {
         if(nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
             SDL_SetWindowFullscreenMode(window, modes[mode.id]);
         }
-        SDL_free(modes);
     }
     SDL_Event ev;
     while(SDL_PollEvent(&ev)) {
@@ -328,7 +327,6 @@ std::vector<FullscreenMode> SDL3GameWindow::getFullscreenModes() {
         for(int j = 0; j < nModes; j++) {
             this->modes.emplace_back(FullscreenMode { .id = j, .description = getModeDescription(modes[j]) });
         }
-        SDL_free(modes);
     }
     return modes;
 }
