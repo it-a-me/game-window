@@ -198,7 +198,7 @@ void SDL3GameWindow::pollEvents() {
         switch (ev.type)
         {
         case SDL_EVENT_MOUSE_MOTION:
-            if(!SDL_GetRelativeMouseMode()) {
+            if(!SDL_GetWindowRelativeMouseMode(window)) {
                 onMousePosition(ev.motion.x * relativeScaleX, ev.motion.y * relativeScaleY);
             } else {
                 onMouseRelativePosition(ev.motion.xrel, ev.motion.yrel);
@@ -252,7 +252,7 @@ void SDL3GameWindow::pollEvents() {
                 auto str = SDL_GetClipboardText();
                 onPaste(str);
             }
-            onKeyboard(getKeyMinecraft(SDL_GetDefaultKeyFromScancode(ev.key.scancode, SDL_KMOD_NONE)), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
+            onKeyboard(getKeyMinecraft(SDL_GetKeymapKeycode(NULL, ev.key.scancode, SDL_KMOD_NONE)), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
             break;
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
         case SDL_EVENT_GAMEPAD_BUTTON_UP:
@@ -291,11 +291,11 @@ void SDL3GameWindow::pollEvents() {
 }
 
 bool SDL3GameWindow::getCursorDisabled() {
-    return SDL_GetRelativeMouseMode();
+    return SDL_GetWindowRelativeMouseMode(window);
 }
 
 void SDL3GameWindow::setCursorDisabled(bool disabled) {
-    SDL_SetRelativeMouseMode(disabled);
+    SDL_SetWindowRelativeMouseMode(window, disabled);
 }
 
 void SDL3GameWindow::setFullscreenMode(const FullscreenMode& mode) {
