@@ -252,7 +252,7 @@ void SDL3GameWindow::pollEvents() {
                 auto str = SDL_GetClipboardText();
                 onPaste(str);
             }
-            onKeyboard(getKeyMinecraft(SDL_GetKeymapKeycode(NULL, ev.key.scancode, SDL_KMOD_NONE)), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
+            onKeyboard(getKeyMinecraft(SDL_GetKeyFromScancode(ev.key.scancode, SDL_KMOD_NONE, false)), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
             break;
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
         case SDL_EVENT_GAMEPAD_BUTTON_UP:
