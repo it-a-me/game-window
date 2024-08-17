@@ -10,6 +10,7 @@
 class SDL3GameWindow : public GameWindow {
 
 private:
+    enum RequestWindowMode { Fullscreen, Windowed, None };
     SDL_Window* window;
     SDL_GLContext context;
     double lastMouseX = 0.0, lastMouseY = 0.0;
@@ -23,7 +24,7 @@ private:
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
-    bool requestFullscreen = false;
+    RequestWindowMode requestedWindowMode = RequestWindowMode::None;
     bool pendingFullscreenModeSwitch = false;
     FullscreenMode mode;
     std::vector<FullscreenMode> modes;

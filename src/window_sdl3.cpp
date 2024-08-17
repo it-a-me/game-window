@@ -181,8 +181,9 @@ static std::string getModeDescription(const SDL_DisplayMode* mode) {
 }
 
 void SDL3GameWindow::pollEvents() {
-    if(requestFullscreen != getFullscreen()) {
-        SDL_SetWindowFullscreen(window, requestFullscreen);
+    if(requestedWindowMode != None) {
+        SDL_SetWindowFullscreen(window, requestedWindowMode == RequestWindowMode::Fullscreen);
+        requestedWindowMode = RequestWindowMode::None;
     }
     if(pendingFullscreenModeSwitch) {
         pendingFullscreenModeSwitch = false;
@@ -336,7 +337,10 @@ bool SDL3GameWindow::getFullscreen() {
 }
 
 void SDL3GameWindow::setFullscreen(bool fullscreen) {
-    requestFullscreen = fullscreen;
+    if (fullscreen)
+        requestedWindowMode = RequestWindowMode::Fullscreen;
+    else
+        requestedWindowMode = RequestWindowMode::Windowed;
 }
 
 void SDL3GameWindow::setClipboardText(std::string const &text) {
